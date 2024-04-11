@@ -1,0 +1,81 @@
+NAME : YAMUNA V
+
+INTERNAL ASSESSMENT 2 MYSQL
+
+1)select machine_id, sum(cost)
+from L1_maintenance_records
+where year(maintenance_date) = 2024 AND month(maintenance_date) = 3 
+group by machine_id
+having sum(cost) > (select avg(cost) from  L1_maintenance_records
+where year(maintenance_date) = 2024 AND month(maintenance_date) = 3);
+
+2)select maintenance_type, count(maintenance_id) as frequency from L1_maintenance_records
+where year(maintenance_date) = 2024 AND month(maintenance_date) = 3
+group by maintenance_type;
+
+3)select technician_name, count(maintenance_id), avg(cost) from L1_maintenance_records
+group by technician_name
+order by count(maintenance_id) desc, avg(cost) DESC;
+
+
+
+4)create view temp1 as 
+select product_id, sum(incident_count_pre_update)-sum(incident_count_post_update) as diff
+from L2_updates
+group by product_id;
+
+select product_id, avg(diff)
+from temp1
+group by product_id;
+
+5)select product_id, max(user_feedback_score) as highest_score from L2_updates
+group by product_id
+order by highest_score desc
+limit 1;
+
+6)select product_id, sum(incident_count_pre_update)-sum(incident_count_post_update) as diff
+from L2_updates
+group by product_id
+order by diff desc
+limit 1;
+
+
+7) SELECT PATIENT_ID, count(facility_id) from l3_visits
+group by patient_id;
+
+select * from l3_patients as p
+join l3_visits as v on p.patient_id = v.patient_id
+join l3_traetments as t on v.visit_id = t.visit_id;
+
+8)select * from l3_patients as p
+join l3_visits as v on p.patient_id = v.patient_id
+join l3_traetments as t on v.visit_id = t.visit_id;
+
+9)select * from l3_patients as p
+join l3_visits as v on p.patient_id = v.patient_id
+join l3_traetments as t on v.visit_id = t.visit_id;
+
+
+
+10)select L4_products.category, L4_products.product_name, sum(L4_sales.quantity)
+from L4_products
+join L4_sales on L4_products.product_id = L4_sales.product_id 
+where year(sale_date) = 2024 and month(sale_date) = 3
+group by L4_products.category, L4_products.product_name
+order by sum(L4_sales.quantity) desc;
+
+11)create view temp6 as
+select l4_stores.region, l4_sales.sale_date, (L4_products.price*L4_sales.quantity)total_sale 
+from L4_sales
+join L4_stores on l4_sales.store_id = l4_stores.store_id
+join L4_products on L4_products.product_id = l4_sales.product_id;
+
+select region, sum(total_sale) from temp6
+where year(sale_date) = 2024 and month(sale_date) = 3
+group by region;
+
+12)select * from L4_products
+left join L4_sales on L4_products.product_id = L4_sales.product_id
+UNION
+select * from l4_products
+RIGHT join l4_sales on l4_products.product_id = l4_sales.product_id;
