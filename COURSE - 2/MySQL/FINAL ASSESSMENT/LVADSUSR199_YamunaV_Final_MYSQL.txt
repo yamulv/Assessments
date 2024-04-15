@@ -1,0 +1,158 @@
+NAME: YAMUNA V
+
+FINAL ASSESSMENT SQL
+
+1)select p.product_category, avg(sr.sales_amount)
+from products as p
+join sales_records as sr
+where datediff(current_date(),sr.sales_date) >= 30
+group by p.product_category
+order by p.product_category;
+
+2)create view temp1 as 
+select product_id, sum(sales_amount) as total_sales
+from sales_records
+where year(sales_date) = 2024
+group by product_id
+order by total_sales desc
+limit 3;
+
+select *, 
+row_number() over() as 'rank'
+from temp1;
+
+3)select c.customer_id, sr.sales_amount, sr.sales_date,
+percent_rank() over(order by sr.sales_amount) as 'percent contribution',
+rank() over() as 'rank revenue'
+from customers as c
+join sales_records as sr;
+
+4)select customer_id, sales_date,
+case 
+when datediff(current_date(), sales_date)> 180 then 'consistent buyers'
+when datediff(current_date(), sales_date)< 180 then 'occasional buyers'
+end as category_buyers
+from sales_records;
+
+
+
+5)select flight_id, avg(ticket_price)
+from tickets
+group by flight_id;
+
+6)select f.flight_id, f.flight_number, f.departure_date, count(t.ticket_id) as count
+from flights as f
+join tickets as t on f.flight_id = t.flight_id
+where month(t.ticket_date) = 3
+group by f.flight_id, f.flight_number, f.departure_date
+order by count desc;
+
+7)select passenger_id, sum(ticket_price)
+from tickets
+group by passenger_id
+order by sum(ticket_price) desc;
+
+8)select month(ticket_date), count(ticket_id)
+from tickets 
+group by month(ticket_date)
+order by count(ticket_id)
+limit 1;
+
+
+9)select player_id, game_id, avg(score) as average
+from playerscores
+group by player_id, game_id
+order by average desc;
+
+10)select game_id, count(player_id)
+from playerscores
+group by game_id
+order by count(player_id) desc
+limit 3;
+
+11)select game_id, count(player_id), avg(score), max(score)
+from playerscores
+group by game_id;
+
+12)select distinct player_id 
+from playerscores
+where datediff(current_date(),play_date)> 30;
+
+13)select doctor_id, sum(cost) 
+from treatments
+group by doctor_id
+order by sum(cost) desc
+limit 5;
+
+14)select treatment_name, sum(cost), sum(cost)*100 / sum(sum(cost)) over () as 'percent contribution'
+from treatments
+group by treatment_name;
+
+15)select patient_id, patient_name, admission_date, discharge_date
+from patients
+where datediff( admission_date, discharge_date)<30;
+
+
+select patient_id, patient_name, admission_date, discharge_date,
+lead(admission_date) over (partition by patient_id order by admission_date) as 'leads',
+datediff(admission_date,leads) as diff
+from patients
+where diff < 30;
+
+16)select gender, diagnosis, ceil(avg(datediff(discharge_date, admission_date)))
+from patients
+group by gender, diagnosis;
+
+
+
+17)select c.department, e.semester, avg(e.grade)
+from courses as c
+join enrollments as e 
+on c.course_id = e.course_id
+group by c.department, e.semester;
+
+18)select s.major, s.enrollment_year, count(e.enrollment_id) as count
+from students as s 
+join enrollments as e
+on s.student_id = e.student_id
+group by s.major, s.enrollment_year
+order by count desc;
+
+19)select e.student_id, e.semester, sum(c.credits)
+from courses as c
+join enrollments as e 
+on c.course_id = e.course_id
+group by  e.student_id, e.semester
+having sum(c.credits) >= 50
+order by e.student_id; 
+
+20)select course_id, count(enrollment_id)
+from enrollments
+group by course_id
+order by count(enrollment_id) desc
+limit 3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
